@@ -13,28 +13,38 @@ def AskUserToGuessLetter():
 def DisplayHiddenWordWithCorrectlyGuessedLetters():
     print ('Guesses left : ' + str(MaxStrikes - Strikes) + '  Word to guess: ', end='')
     for i in range(len(WordToGuess)):
-        if(LetterGuessed[i]):
+        if(LetterGuessedBools[i]):
             print(WordToGuess[i], end=' ')
         else:                       
             print('_', end=' ')
     print("")
     return
 
-def CheckForLetter(letter):
+def CheckForLetter(letter):    
+    global LettersGuessed
+    global Strikes
+    
     isLetter = False;
+    
+    for c in LettersGuessed:
+        if(letter == c):
+            print('You have already guessed the letter ' + letter + '!')
+            return
+    
     for i in range(len(WordToGuess)):
         if(letter == WordToGuess[i]):
-            LetterGuessed[i] = True
-            isLetter = True
+            LetterGuessedBools[i] = True
+            isLetter = True   
 
-    if(not isLetter):    
-        global Strikes
-        Strikes += 1            
+    if(not isLetter):              
+        Strikes += 1
+    
+    LettersGuessed += letter  
     return
 
 def CheckIfUserWon():
     won = True
-    for letter in LetterGuessed:
+    for letter in LetterGuessedBools:
         if(not letter):
             won = False
     return won
@@ -44,17 +54,26 @@ def PrintWithWhiteSpace(outputString):
     print(outputString)
     print('\n\n\n')
 
+def DisplayLettersGuessed():
+    print ('Letters guessed:', end=' ')
+    for c in LettersGuessed:        
+        print(c, end=' ')
+    print('')
+    return
+
 WordToGuess = "responsibilities"
 GameOver = False
 GameWon = False
 Strikes = 0
 MaxStrikes = 5
+LettersGuessed = ''
 
-
-LetterGuessed = [False for i in range(len(WordToGuess))]
+LetterGuessedBools = [False for i in range(len(WordToGuess))]
 
 while(not GameOver and not GameWon):
+    PrintWithWhiteSpace('')
     DisplayHiddenWordWithCorrectlyGuessedLetters()
+    DisplayLettersGuessed()
     nextGuess = AskUserToGuessLetter()    
     CheckForLetter(nextGuess)
     GameWon = CheckIfUserWon()
